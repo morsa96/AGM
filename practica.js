@@ -207,10 +207,10 @@ function solarSystemCreate(scene, planets){
         texSun.minFilter = THREE.LinearFilter;
         texSun.magFilter = THREE.LinearFilter;
 
-        planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshBasicMaterial({ color:'white', map: texSun, side: THREE.DoubleSide }));
-        var geoEsfera = new THREE.SphereGeometry(sunSize, 30, 30);
-        var matEsfera = new THREE.MeshPhongMaterial( {color: "yellow", specular:'white', shininess:40, envMap: texEsfera});
-        esfera = new THREE.Mesh(geoEsfera, matEsfera);
+        //planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshBasicMaterial({ color:'white', map: texSun, side: THREE.DoubleSide }));
+      //var geoEsfera = new THREE.SphereGeometry(sunSize, 30, 30);
+      //  var matEsfera = new THREE.MeshPhongMaterial( {color: "yellow", specular:'white', shininess:40, envMap: texEsfera});
+      //  esfera = new THREE.Mesh(geoEsfera, matEsfera);
 
         if (sphere.name === 'sun') {
             planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshBasicMaterial({ color:'white', map: texSun, side: THREE.DoubleSide }));
