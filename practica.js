@@ -11,7 +11,7 @@
 // variables globales estandar
 var renderer, scene, camera, descPanel;
 var cameraControls; //per il controllo della camera
-let planets = {sun: {}, mercury: {}, venus: {}, earth: {}, mars: {}, jupiter: {}, saturn: {}, uranus: {}, neptune: {}};
+var planets = {sun: {}, mercury: {}, venus: {}, earth: {}, mars: {}, jupiter: {}, saturn: {}, uranus: {}, neptune: {}};
 
 // Mouse interactive
 const raycaster = new THREE.Raycaster();
@@ -27,10 +27,10 @@ const sunSize = 1; // Realistic 109 - number of earth radius
  */
 
 
-const solarSystemData = [
+var solarSystemData = [
     {
         name: 'sun',
-        radius: sunSize,
+        radius: 1,
         distance: 0,
         rotate: 0.01,
         orbit: 2 * Math.PI * AU * AU,
@@ -112,7 +112,7 @@ const helpers = (scene) => {
     const divisions = 64;
     const gridHelper = new THREE.PolarGridHelper( radius, radials, circles, divisions );
     scene.add(gridHelper);
-};
+}
 
 const dataArray = {
     'sun' : '<h2> Sun </h2> <p> The Sun is the Solar Systems star and by far its most massive component. Its large mass (332,900 Earth masses), which comprises 99.86% of all the mass in the Solar System. </p> <p> It produces temperatures and densities in its core high enough to sustain nuclear fusion of hydrogen into helium, making it a main-sequence star. This releases an enormous amount of energy, mostly radiated into space as electromagnetic radiation peaking in visible light.</p>',
@@ -139,8 +139,6 @@ init();
 animate();
 render();
 
-// Create Solar System
-solarSystemCreate(scene, planets);
 //window.addEventListener("click", onMouseMove, false);
 
 function init() {
@@ -166,8 +164,6 @@ function init() {
   // Description panel
   descPanel = document.getElementById('description');
 
-  // Camera control
-//  controls = new OrbitControls(camera, renderer.domElement );
 
   // Light - Sun
   const light = new THREE.SpotLight(0xff0000);
@@ -177,9 +173,12 @@ function init() {
   scene.add(light);
   scene.add(pointLight);
 
-  // Camera
-  camera.position.set(10, 25, 15);
+
   //controls.update();
+
+  // Create Solar System
+  solarSystemCreate(scene, planets);
+
   //se modifico la finestra del browser, l'immagine viene tagliata dove diminuisco
   //se invece voglio che l'immagini si dimensioni di conseguenza, creo una funzione
   window.addEventListener('resize', updateAspectRatio);
@@ -200,21 +199,15 @@ function solarSystemCreate(scene, planets){
     const bgTexture = loader.load(path + "2k_stars_milky_way.jpg");
     scene.background = bgTexture;
 
+    var texSun = loader.load( path+"2k_sun.jpg"); //carico l'immagine da posizionare sul cubo
+    //texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    //texture.matrixAutoUpdate = false;
+    texSun.minFilter = THREE.LinearFilter;
+    texSun.magFilter = THREE.LinearFilter;
+
     solarSystemData.map(sphere => {
-        var texSun = loader.load( path+"2k_sun.jpg"); //carico l'immagine da posizionare sul cubo
-        //texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-        //texture.matrixAutoUpdate = false;
-        texSun.minFilter = THREE.LinearFilter;
-        texSun.magFilter = THREE.LinearFilter;
-
-        //planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshBasicMaterial({ color:'white', map: texSun, side: THREE.DoubleSide }));
-      //var geoEsfera = new THREE.SphereGeometry(sunSize, 30, 30);
-      //  var matEsfera = new THREE.MeshPhongMaterial( {color: "yellow", specular:'white', shininess:40, envMap: texEsfera});
-      //  esfera = new THREE.Mesh(geoEsfera, matEsfera);
-
         if (sphere.name === 'sun') {
-            planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshBasicMaterial({ color:'white', map: texSun, side: THREE.DoubleSide }));
-            planets[sphere.name].castShadow = true;
+            planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshBasicMaterial({map: texSun}));
         }
         else {
             planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshPhongMaterial({
@@ -233,7 +226,7 @@ function solarSystemCreate(scene, planets){
         planets[sphere.name].name = sphere.name;
         scene.add(planets[sphere.name]);
     });
-};
+}
 
 /**
  * Map all planets and change it position, rotation etc.
@@ -246,7 +239,7 @@ function solarSystemMove(planets){
         planets[sphere.name].position.x = Math.cos(sphere.orbit) * sphere.distance;
         planets[sphere.name].position.z = Math.sin(sphere.orbit) * sphere.distance;
     });*/
-};
+}
 
 function updateAspectRatio(){
   //mantiene la relazioni di aspetto tra bordi e camera
