@@ -30,7 +30,7 @@ const sunSize = 1; // Realistic 109 - number of earth radius
 var solarSystemData = [
     {
         name: 'sun',
-        radius: 1,
+        radius: sunSize,
         distance: 0,
         rotate: 0.01,
         orbit: 2 * Math.PI * AU * AU,
@@ -102,18 +102,6 @@ var solarSystemData = [
     }
 ];
 
-//aggiungere una interfaccia per ogni pianeta
-const helpers = (scene) => {
-    const axis = new THREE.AxisHelper(20);
-    scene.add(axis);
-    const radius = 20;
-    const radials = 20;
-    const circles = 20;
-    const divisions = 64;
-    const gridHelper = new THREE.PolarGridHelper( radius, radials, circles, divisions );
-    scene.add(gridHelper);
-}
-
 const dataArray = {
     'sun' : '<h2> Sun </h2> <p> The Sun is the Solar Systems star and by far its most massive component. Its large mass (332,900 Earth masses), which comprises 99.86% of all the mass in the Solar System. </p> <p> It produces temperatures and densities in its core high enough to sustain nuclear fusion of hydrogen into helium, making it a main-sequence star. This releases an enormous amount of energy, mostly radiated into space as electromagnetic radiation peaking in visible light.</p>',
 
@@ -134,12 +122,18 @@ const dataArray = {
     'neptune' : ' <h2> Neptune </h2>  <p> </p> ',
 
 }
+const helpers = (scene) => {
+    const axis = new THREE.AxisHelper(20);
+    scene.add(axis);
+    const radius = 20;    const radials = 20;    const circles = 20;    const divisions = 64;
+    const gridHelper = new THREE.PolarGridHelper( radius, radials, circles, divisions );
+    scene.add(gridHelper);
+};
 
 init();
-animate();
 render();
 
-//window.addEventListener("click", onMouseMove, false);
+window.addEventListener("click", onMouseMove, false);
 
 function init() {
   // Funcion de inicializacion de motor, escena y camara
@@ -164,7 +158,6 @@ function init() {
   // Description panel
   descPanel = document.getElementById('description');
 
-
   // Light - Sun
   const light = new THREE.SpotLight(0xff0000);
   light.position.set(0, 1, 0);
@@ -173,7 +166,7 @@ function init() {
   scene.add(light);
   scene.add(pointLight);
 
-
+  camera.position.set(10, 40, 100);
   //controls.update();
 
   // Create Solar System
@@ -207,7 +200,7 @@ function solarSystemCreate(scene, planets){
 
     solarSystemData.map(sphere => {
         if (sphere.name === 'sun') {
-            planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshBasicMaterial({map: texSun}));
+            planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshBasicMaterial({ color: 'white'}));
         }
         else {
             planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshPhongMaterial({
@@ -226,6 +219,8 @@ function solarSystemCreate(scene, planets){
         planets[sphere.name].name = sphere.name;
         scene.add(planets[sphere.name]);
     });
+
+    renderer.domElement.addEventListener('click',onMouseMove);
 }
 
 /**
@@ -233,12 +228,12 @@ function solarSystemCreate(scene, planets){
  * @param {object} planets
  */
 function solarSystemMove(planets){
-    /*solarSystemData.map(sphere => {
+    solarSystemData.map(sphere => {
         sphere.orbit += sphere.lineSpeed * 0.01;
-        //planets[sphere.name].rotateY(sphere.rotate);
+        planets[sphere.name].rotateY(sphere.rotate);
         planets[sphere.name].position.x = Math.cos(sphere.orbit) * sphere.distance;
         planets[sphere.name].position.z = Math.sin(sphere.orbit) * sphere.distance;
-    });*/
+    });
 }
 
 function updateAspectRatio(){
@@ -271,11 +266,11 @@ function render() {
 /*
  * Mouse control
  * @param {*} event
-
+*/
 function onMouseMove(event) {
     // Calculate mouse position in normalized device coordinates
     // (-1 to +1) for both components
-    event.preventDefault();
+    //event.preventDefault();
     mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
     mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
     raycaster.setFromCamera( mouse, camera );
@@ -283,22 +278,21 @@ function onMouseMove(event) {
     const intersects = raycaster.intersectObjects(scene.children);
 
     if (intersects.length > 0) {
-        //descPanel.innerHTML = intersects[0].object.name;
+        descPanel.innerHTML = intersects[0].object.name;
         displayData(intersects[0].object);
-    }
-    else {
+    } else {
         descPanel.style.display = "none";
-        }
+    }
 }
 
 /*
  * Display information about planets
  * @param {object} object
+*/
 
 function displayData (object) {
     if(object.name !== ''){
         const data = dataArray[object.name];
-
         descPanel.innerHTML = data;
         descPanel.style.display = "block";
     }
@@ -306,4 +300,3 @@ function displayData (object) {
         descPanel.style.display = "none";
     }
 }
-*/
