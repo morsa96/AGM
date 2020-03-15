@@ -12,6 +12,7 @@
 var renderer, scene, camera, descPanel;
 var cameraControls; //per il controllo della camera
 var planets = {sun: {}, mercury: {}, venus: {}, earth: {}, mars: {}, jupiter: {}, saturn: {}, uranus: {}, neptune: {}};
+var moon ;
 
 // Mouse interactive
 const raycaster = new THREE.Raycaster();
