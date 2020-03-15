@@ -203,6 +203,7 @@ function solarSystemCreate(scene, planets){
     var texSaturn = loader.load(path+"2k_saturn.jpg");
     var texUranus = loader.load(path+"2k_uranus.jpg");
     var texNeptune = loader.load(path+"2k_neptune.jpg");
+    var texMoon = loader.load(path+"2k_moon.jpg");
 
     texSun.minFilter = THREE.LinearFilter;
     texSun.magFilter = THREE.LinearFilter;
@@ -319,10 +320,14 @@ function solarSystemCreate(scene, planets){
                 planets[sphere.name].name = sphere.name;
                 scene.add(planets[sphere.name]);
                 break;
-        }
-
-    });
-
+            }
+        });
+    //Moon
+    var moonGeometry = new THREE.SphereGeometry(0.38 * ER, 32, 32);
+    var moonMaterial = new THREE.MeshPhongMaterial({ map: texMoon });
+    var moon = new THREE.Mesh(moonGeometry, moonMaterial);
+    moon.position.set(sunSize + AU,0,0);
+    scene.add(moon);
     renderer.domElement.addEventListener('click',onMouseMove);
 }
 
@@ -337,6 +342,8 @@ function solarSystemMove(planets){
         planets[sphere.name].position.x = Math.cos(sphere.orbit) * sphere.distance;
         planets[sphere.name].position.z = Math.sin(sphere.orbit) * sphere.distance;
     });
+    moon.position.x = (sunSize + (0.387 * AU)) * Math.cos(2 * Math.PI * AU * AU);
+    moon.position.z = (sunSize + (0.387 * AU)) * Math.sin(2 * Math.PI * AU * AU);
 }
 
 function updateAspectRatio(){
