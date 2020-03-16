@@ -11,7 +11,8 @@
 var renderer, scene, camera, descPanel;
 var cameraControls; //per il controllo della camera
 var planets = {sun: {}, mercury: {}, venus: {}, earth: {}, moon:{}, mars: {}, jupiter: {}, saturn: {}, uranus: {}, neptune: {}};
-
+var rings;
+var radius=0.45, segments=32;
 // Mouse interactive
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
@@ -118,7 +119,7 @@ const dataArray = {
 
     'earth' : ' <h2> Earth </h2> <p> Earth is the third planet from the Sun and the only astronomical object known to harbor life. According to radiometric dating and other evidence, Earth formed over 4.5 billion years ago. The gravity interacts with other objects in space, especially the Sun and the Moon, which is the only natural satellite of Earth.</p>    ',
 
-    'moon' : '<h2> Moon <h2> <p> The Moon is an astronomical body orbiting Earth as its only natural satellite. It is the fifth-largest satellite in the Solar System, and by far the largest among planetary satellites relative to the size of the planet that it orbits (its primary). </p>',
+    'moon' : '<h2> Moon </h2> <p> The Moon is an astronomical body orbiting Earth as its only natural satellite. It is the fifth-largest satellite in the Solar System, and by far the largest among planetary satellites relative to the size of the planet that it orbits (its primary). </p>',
 
     'mars' : ' <h2> Mars </h2> <p> Mars is the fourth planet from the Sun and the second-smallest planet in the Solar System after Mercury. It is often referred to as the Red Planet and this refers to the effect of the iron oxide prevalent on Mars surface, which gives it a reddish appearance distinctive among the astronomical bodies visible to the naked eye.</p>  <p> Mars has surface features reminiscent both of the impact craters of the Moon and the valleys, deserts, and polar ice caps of Earth </p>  ',
 
@@ -217,6 +218,7 @@ function solarSystemCreate(scene, planets){
     var texUranus = loader.load(path+"2k_uranus.jpg");
     var texNeptune = loader.load(path+"2k_neptune.jpg");
     var texMoon = loader.load(path+"2k_moon.jpg");
+    var texRings = loader.load(path+"2k_saturn_ring_alpha.png");
 
     texSun.minFilter = THREE.LinearFilter;
     texSun.magFilter = THREE.LinearFilter;
@@ -313,6 +315,10 @@ function solarSystemCreate(scene, planets){
                 orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x056d64}));
                 orbit.rotateX(0.5 * Math.PI);
                 scene.add(orbit);
+                rings = new THREE.Mesh(new THREE.RingGeometry(1.2 * radius, 2 * radius, 2 * segments, 5, 0, Math.PI * 2), new THREE.MeshBasicMaterial({
+                    map: texRings, side: THREE.DoubleSide, transparent: true, opacity: 0.6 }));
+                rings.position.x = sunSize + (9.53 * AU);
+                scene.add(rings);
                 planets[sphere.name].name = sphere.name;
                 scene.add(planets[sphere.name]);
                 break;
