@@ -315,7 +315,7 @@ function solarSystemCreate(scene, planets){
                 orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x056d64}));
                 orbit.rotateX(0.5 * Math.PI);
                 scene.add(orbit);
-                rings = new THREE.Mesh(new THREE.RingGeometry(1.2 * radius, 2 * radius, 2 * segments, 5, 0, Math.PI * 2), new THREE.MeshBasicMaterial({
+                rings = new THREE.Mesh(new THREE.RingGeometry(1.2 * 9.45 * ER, 2 *  9.45 * ER, 2 * segments, 5, 0, Math.PI * 2), new THREE.MeshBasicMaterial({
                     map: texRings, side: THREE.DoubleSide, transparent: true, opacity: 0.6 }));
                 rings.position.x = sunSize + (9.53 * AU);
                 scene.add(rings);
