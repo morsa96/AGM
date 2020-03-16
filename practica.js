@@ -241,7 +241,7 @@ function solarSystemCreate(scene, planets){
                 planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshPhongMaterial({
                   specular: 0x050505,
                   shininess: 100,
-                  map : textMoon
+                  map : texMoon
                 }));
                 planets[sphere.name].name = sphere.name;
                 scene.add(planets[sphere.name]);
