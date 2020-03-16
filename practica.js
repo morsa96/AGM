@@ -231,9 +231,9 @@ function solarSystemCreate(scene, planets){
                     map: texEarth
                 }));
                 orbitCircle = new THREE.EllipseCurve(0, 0, sphere.distance, sphere.distance, 0, 2 * Math.PI, false, 0);
-                orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x056d64}));
-                orbit.rotateX(0.5 * Math.PI);
-                scene.add(orbit);
+                orbitEarth = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x056d64}));
+                orbitEarth.rotateX(0.5 * Math.PI);
+                scene.add(orbitEarth);
                 planets[sphere.name].name = sphere.name;
                 scene.add(planets[sphere.name]);
                 break;
@@ -243,6 +243,10 @@ function solarSystemCreate(scene, planets){
                   shininess: 100,
                   map : texMoon
                 }));
+                orbitCircle = new THREE.EllipseCurve(0, 0, sphere.distance, sphere.distance, 0, 2 * Math.PI, false, 0);
+                orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x056d64}));
+                orbit.rotateX(0.5 * Math.PI);
+                orbitEarth.add(orbit);
                 planets[sphere.name].name = sphere.name;
                 scene.add(planets[sphere.name]);
                 break;
@@ -357,7 +361,7 @@ function solarSystemMove(planets){
             planets[sphere.name].position.z = Math.sin(sphere.orbit) * sphere.distance;
         }else{*/
             sphere.orbit += sphere.lineSpeed * 0.01;
-            planets[sphere.name].rotateY(sphere.rotate);
+            planets[sphere.name].rotateY(sphere.rotate); //su se stesso
             planets[sphere.name].position.x = Math.cos(sphere.orbit) * sphere.distance;
             planets[sphere.name].position.z = Math.sin(sphere.orbit) * sphere.distance;
         //}
