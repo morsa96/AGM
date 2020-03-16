@@ -64,7 +64,7 @@ var solarSystemData = [
     {
         name: 'moon',
         radius: 0.34 * ER,
-        distance: sunSize + (0.387 * AU) + (0.72 * AU) + AU + ER + ER,
+        distance: sunSize + AU + ER + ER,
         rotate: 0.01,
         orbit: 2 * Math.PI * AU * AU,
         lineSpeed: (2 * Math.PI / 1000) * AU,
