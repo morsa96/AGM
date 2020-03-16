@@ -4,15 +4,13 @@
  * @date: 02-03-2020
  */
 
- //import {dataArray} from './Planets';
- //import {solarSystemCreate, solarSystemMove} from './SolarSystem';
- //import OrbitControls from 'orbit-controls-es6';
-
+//aggiungere il cast luce per ogni pianeta
+//il controllo in qualcosa
+//una luce ambientale
 // variables globales estandar
 var renderer, scene, camera, descPanel;
 var cameraControls; //per il controllo della camera
 var planets = {sun: {}, mercury: {}, venus: {}, earth: {}, moon:{}, mars: {}, jupiter: {}, saturn: {}, uranus: {}, neptune: {}};
-var moon ;
 
 // Mouse interactive
 const raycaster = new THREE.Raycaster();
@@ -63,8 +61,8 @@ var solarSystemData = [
     },
     {
         name: 'moon',
-        radius: 0.34 * ER,
-        distance: sunSize + AU + ER,
+        radius: 0.2727 * ER,
+        distance: sunSize + AU + 2*ER,
         rotate: 0.01,
         orbit: 2 * Math.PI * AU,
         lineSpeed: (2 * Math.PI / 1000) * AU,
@@ -73,7 +71,7 @@ var solarSystemData = [
         name: 'mars',
         radius: 0.53 * ER,
         distance: sunSize + (1.523 * AU),
-        rotate: 0.01,
+        rotate: 0.004,
         orbit: 2 * Math.PI * AU * AU,
         lineSpeed: (2 * Math.PI / 1880) * AU,
     },
@@ -114,21 +112,23 @@ var solarSystemData = [
 const dataArray = {
     'sun' : '<h2> Sun </h2> <p> The Sun is the Solar Systems star and by far its most massive component. Its large mass (332,900 Earth masses), which comprises 99.86% of all the mass in the Solar System. </p> <p> It produces temperatures and densities in its core high enough to sustain nuclear fusion of hydrogen into helium, making it a main-sequence star. This releases an enormous amount of energy, mostly radiated into space as electromagnetic radiation peaking in visible light.</p>',
 
-    'mercury' : '<h2> Mercury </h2> <p>Mercury (0.4 AU from the Sun) is the closest planet to the Sun and on average, all seven other planets. The smallest planet in the Solar System (0.055 M⊕), Mercury has no natural satellites.</p> <p> Mercury has very tenuous atmosphere consists of atoms blasted off its surface by the solar wind. Its relatively large iron core and thin mantle have not yet been adequately explained </p>',
+    'mercury' : '<h2> Mercury </h2> <p>Mercury is the closest planet to the Sun and on average, all seven other planets. The smallest planet in the Solar System (0.055 M⊕), Mercury has no natural satellites.</p> <p> Mercury has very tenuous atmosphere consists of atoms blasted off its surface by the solar wind. Its relatively large iron core and thin mantle have not yet been adequately explained </p>',
 
-    'venus' : '<h2> Venus </h2> <p>',
+    'venus' : '<h2> Venus </h2> <p> Venus is the second planet from the Sun. It is named after the Roman goddess of love and beauty. </p> <p> As the second-brightest natural object in the night sky after the Moon, Venus can cast shadows and, rarely, is visible to the naked eye in broad daylight. With a rotation period of 243 Earth days, it takes longer to rotate about its axis than any planet in the Solar System and does so in the opposite direction to all but Uranus (meaning the Sun rises in the west and sets in the east). </p> <p> Venus does not have any moons, a distinction it shares only with Mercury among planets in the Solar System </p>',
 
-    'earth' : ' <h2> Earth </h2> <p> </p>    ',
+    'earth' : ' <h2> Earth </h2> <p> Earth is the third planet from the Sun and the only astronomical object known to harbor life. According to radiometric dating and other evidence, Earth formed over 4.5 billion years ago. The gravity interacts with other objects in space, especially the Sun and the Moon, which is the only natural satellite of Earth.</p>    ',
 
-    'mars' : ' <h2> Mars </h2> <p> </p>    ',
+    'moon' : '<h2> Moon <h2> <p> The Moon is an astronomical body orbiting Earth as its only natural satellite. It is the fifth-largest satellite in the Solar System, and by far the largest among planetary satellites relative to the size of the planet that it orbits (its primary). </p>',
 
-    'jupiter' : ' <h2> Jupiter  </h2>  <p></p>   ',
+    'mars' : ' <h2> Mars </h2> <p> Mars is the fourth planet from the Sun and the second-smallest planet in the Solar System after Mercury. It is often referred to as the Red Planet and this refers to the effect of the iron oxide prevalent on Mars surface, which gives it a reddish appearance distinctive among the astronomical bodies visible to the naked eye.</p>  <p> Mars has surface features reminiscent both of the impact craters of the Moon and the valleys, deserts, and polar ice caps of Earth </p>  ',
 
-    'saturn' : ' <h2> Saturn </h2>  <p></p>  ',
+    'jupiter' : ' <h2> Jupiter  </h2>  <p>Jupiter is the fifth planet from the Sun and the largest in the Solar System. It is a gas giant with a mass one-thousandth that of the Sun, but two-and-a-half times that of all the other planets in the Solar System combined. Jupiter is one of the brightest objects visible to the naked eye in the night sky. </p> <p> When viewed from Earth, Jupiter can be bright enough for its reflected light to cast shadows, and is on average the third-brightest natural object in the night sky after the Moon and Venus. </p>   ',
 
-    'uranus' : ' <h2> Uranus </h2>   <p></p>   ',
+    'saturn' : ' <h2> Saturn </h2>  <p>Saturn is the sixth planet from the Sun and the second-largest in the Solar System, after Jupiter. It is a gas giant with an average radius of about nine times that of Earth.</p> <p> It only has one-eighth the average density of Earth; however, with its larger volume, Saturn is over 95 times more massive. </p> ',
 
-    'neptune' : ' <h2> Neptune </h2>  <p> </p> ',
+    'uranus' : ' <h2> Uranus </h2> <p>Uranus is the seventh planet from the Sun. It has the third-largest planetary radius and fourth-largest planetary mass in the Solar System. </p> <p> ranus is similar in composition to Neptune, and both have bulk chemical compositions which differ from that of the larger gas giants Jupiter and Saturn. For this reason, scientists often classify Uranus and Neptune as "ice giants" to distinguish them from the gas giants. </p>  ',
+
+    'neptune' : ' <h2> Neptune </h2>  <p>Neptune is the eighth and farthest known planet from the Sun in the Solar System. In the Solar System, it is the fourth-largest planet by diameter, the third-most-massive planet, and the densest giant planet. </p><p> Neptune is 17 times the mass of Earth, slightly more massive than its near-twin Uranus. Neptune is denser and physically smaller than Uranus because its greater mass causes more gravitational compression of its atmosphere. </p> ',
 
 }
 const helpers = (scene) => {
@@ -174,6 +174,10 @@ function init() {
   pointLight.position.set(0, 1, 0);
   scene.add(light);
   scene.add(pointLight);
+
+  //Light Ambient
+  var lightAmb = new THREE.AmbientLight( 0x404040 ); // soft white light
+  scene.add( lightAmb );
 
   camera.position.set(10, 40, 100);
   //controls.update();
@@ -243,10 +247,6 @@ function solarSystemCreate(scene, planets){
                   shininess: 100,
                   map : texMoon
                 }));
-                orbitCircle = new THREE.EllipseCurve(0, 0, sphere.distance, sphere.distance, 0, 2 * Math.PI, false, 0);
-                orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x056d64}));
-                orbit.rotateX(0.5 * Math.PI);
-                orbitEarth.add(orbit);
                 planets[sphere.name].name = sphere.name;
                 scene.add(planets[sphere.name]);
                 break;
