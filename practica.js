@@ -64,7 +64,7 @@ var solarSystemData = [
     {
         name: 'moon',
         radius: 0.34 * ER,
-        distance: (3*sunSize) + (0.387 * AU) + (0.72 * AU) + AU + ER + ER,
+        distance: sunSize + (0.387 * AU) + (0.72 * AU) + AU + ER + ER,
         rotate: 0.01,
         orbit: 2 * Math.PI * AU * AU,
         lineSpeed: (2 * Math.PI / 1000) * AU,
@@ -354,7 +354,7 @@ function solarSystemMove(planets){
             sphere.orbit += sphere.lineSpeed * 0.01;
             planets[sphere.name].rotateY(sphere.rotate);
             planets[sphere.name].position.x = sphere.distance;
-            planets[sphere.name].position.z = Math.sin(sphere.orbit);
+            planets[sphere.name].position.z = Math.sin(sphere.orbit) * sphere.distance;
         }else{
             sphere.orbit += sphere.lineSpeed * 0.01;
             planets[sphere.name].rotateY(sphere.rotate);
