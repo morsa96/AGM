@@ -320,13 +320,13 @@ function solarSystemCreate(scene, planets){
                 orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x056d64}));
                 orbit.rotateX(0.5 * Math.PI);
                 scene.add(orbit);
+                planets[sphere.name].name = sphere.name;
                 innerRadius = (planets[sphere.name]["radius"] + 6.630) / planets[sphere.name]["radius"];
                 outerRadius = (planets[sphere.name]["radius"] + saturnOuterRadius) / planets[sphere.name]["radius"];
                 ring = createRing(innerRadius, outerRadius, ringSegments,texRings);
                 //ring.receiveShadow = true;
                 //ring.castShadow = true;
-                scene.add(ring);
-                planets[sphere.name].name = sphere.name;
+                planets[sphere.name].add(ring);
                 scene.add(planets[sphere.name]);
                 break;
             case "uranus":
