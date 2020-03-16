@@ -11,7 +11,7 @@
 // variables globales estandar
 var renderer, scene, camera, descPanel;
 var cameraControls; //per il controllo della camera
-var planets = {sun: {}, mercury: {}, venus: {}, earth: {}, mars: {}, jupiter: {}, saturn: {}, uranus: {}, neptune: {}};
+var planets = {sun: {}, mercury: {}, venus: {}, earth: {}, moon:{}, mars: {}, jupiter: {}, saturn: {}, uranus: {}, neptune: {}};
 var moon ;
 
 // Mouse interactive
@@ -60,6 +60,14 @@ var solarSystemData = [
         rotate: 0.02,
         orbit: 2 * Math.PI * AU * AU,
         lineSpeed: (2 * Math.PI / 1000) * AU,
+    },
+    {
+        name: 'moon',
+        radius: 0.38 * ER,
+        distance: ER + (0.387 * AU),
+        rotate: 0.01,
+        orbit: 2 * Math.PI * AU * AU,
+        lineSpeed: (2 * Math.PI / 240) * AU,
     },
     {
         name: 'mars',
@@ -229,6 +237,15 @@ function solarSystemCreate(scene, planets){
                 planets[sphere.name].name = sphere.name;
                 scene.add(planets[sphere.name]);
                 break;
+            case "moon":
+                planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshPhongMaterial({
+                  specular: 0x050505,
+                  shininess: 100,
+                  map : textMoon
+                }));
+                planets[sphere.name].name = sphere.name;
+                scene.add(planets[sphere.name]);
+                break;
             case "mercury":
                 planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshPhongMaterial({
                     specular: 0x050505,
@@ -323,12 +340,7 @@ function solarSystemCreate(scene, planets){
                 break;
             }
         });
-    //Moon
-    var moonGeometry = new THREE.SphereGeometry(0.38 * ER, 32, 32);
-    var moonMaterial = new THREE.MeshPhongMaterial({ map: texMoon });
-    var moon = new THREE.Mesh(moonGeometry, moonMaterial);
-    moon.position.set(sunSize + AU,0,0);
-    scene.add(moon);
+
     renderer.domElement.addEventListener('click',onMouseMove);
 }
 
@@ -343,8 +355,6 @@ function solarSystemMove(planets){
         planets[sphere.name].position.x = Math.cos(sphere.orbit) * sphere.distance;
         planets[sphere.name].position.z = Math.sin(sphere.orbit) * sphere.distance;
     });
-    moon.position.x = (sunSize + (0.387 * AU)) * Math.cos(2 * Math.PI * AU * AU);
-    moon.position.z = (sunSize + (0.387 * AU)) * Math.sin(2 * Math.PI * AU * AU);
 }
 
 function updateAspectRatio(){
