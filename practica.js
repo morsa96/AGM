@@ -350,17 +350,17 @@ function solarSystemCreate(scene, planets){
  */
 function solarSystemMove(planets){
     solarSystemData.map(sphere => {
-        if (sphere.name == "moon"){
-            sphere.orbit += sphere.lineSpeed * 0.01;
-            planets[sphere.name].rotateY(sphere.rotate);
-            planets[sphere.name].position.x = sphere.distance;
-            planets[sphere.name].position.z = Math.sin(sphere.orbit) * sphere.distance;
-        }else{
+        /*if (sphere.name == "moon"){
             sphere.orbit += sphere.lineSpeed * 0.01;
             planets[sphere.name].rotateY(sphere.rotate);
             planets[sphere.name].position.x = Math.cos(sphere.orbit) * sphere.distance;
             planets[sphere.name].position.z = Math.sin(sphere.orbit) * sphere.distance;
-        }
+        }else{*/
+            sphere.orbit += sphere.lineSpeed * 0.01;
+            planets[sphere.name].rotateY(sphere.rotate);
+            planets[sphere.name].position.x = Math.cos(sphere.orbit) * sphere.distance;
+            planets[sphere.name].position.z = Math.sin(sphere.orbit) * sphere.distance;
+        //}
     });
 }
 
