@@ -220,6 +220,11 @@ function solarSystemCreate(scene, planets){
     var texMoon = loader.load(path+"2k_moon.jpg");
     var texRings = loader.load(path+"2k_saturn_ring_alpha.png");
 
+    var ringSegments = 70;
+    var mesh, innerRadius, outerRadius, ring;
+    var saturnOuterRadius = 120.700;
+
+
     texSun.minFilter = THREE.LinearFilter;
     texSun.magFilter = THREE.LinearFilter;
 
@@ -315,10 +320,13 @@ function solarSystemCreate(scene, planets){
                 orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x056d64}));
                 orbit.rotateX(0.5 * Math.PI);
                 scene.add(orbit);
-                rings = new THREE.Mesh(new THREE.RingGeometry(1.2 * 9.45 * ER, 2 *  9.45 * ER, 2 * segments, 5, 0, Math.PI * 2), new THREE.MeshBasicMaterial({
-                    map: texRings, side: THREE.DoubleSide, transparent: true, opacity: 0.6 }));
-                rings.position.x = sunSize + (9.53 * AU);
-                scene.add(rings);
+                innerRadius = (planets[sphere.name]["radius"] + 6.630) / planets[sphere.name]["radius"];
+                outerRadius = (planets[sphere.name]["radius"] + saturnOuterRadius) / planets[sphere.name]["radius"];
+                ring = createRing(innerRadius, outerRadius, ringSegments,
+                                  texRings);
+                ring.receiveShadow = true;
+                ring.castShadow = true;
+                scene.add(ring);
                 planets[sphere.name].name = sphere.name;
                 scene.add(planets[sphere.name]);
                 break;
@@ -372,6 +380,25 @@ function solarSystemMove(planets){
             planets[sphere.name].position.z = Math.sin(sphere.orbit) * sphere.distance;
         //}
     });
+}
+
+function createRing(radius, width, height, texture) {
+
+    var geometry = new THREE.BufferGeometry().fromGeometry(
+                new THREE.RingGeometry(radius, width, height));
+
+    var material = new THREE.MeshPhongMaterial({
+                                                   map: texture,
+                                                   side: THREE.DoubleSide,
+                                                   transparent: true,
+                                                   opacity: 0.8
+                                               });
+    material.map.minFilter = THREE.NearestFilter;
+    var mesh = new THREE.Mesh(geometry, material);
+    mesh.lookAt(new THREE.Vector3(0, 90, 0));
+
+    return mesh;
+
 }
 
 function updateAspectRatio(){
