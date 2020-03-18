@@ -311,6 +311,7 @@ function solarSystemCreate(scene, planets){
                 scene.add(planets[sphere.name]);
                 break;
             case "saturn":
+                var saturnSys = new THREE.Group();
                 planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshPhongMaterial({
                     specular: 0x050505,
                     shininess: 100,
@@ -320,14 +321,30 @@ function solarSystemCreate(scene, planets){
                 orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x056d64}));
                 orbit.rotateX(0.5 * Math.PI);
                 scene.add(orbit);
+
+                //rings
+                var saturnRingGeom = new THREE.Geometry();
+                var vertices = [];
+                for (let i = 0; i < 2000; i++) {
+                  let r = THREE.Math.randFloat(1.5, 4);
+                  let angle = THREE.Math.randFloat(0, Math.PI * 2);
+                  let v = new THREE.Vector3(
+                    Math.cos(angle) * r,
+                    0,
+                    Math.sin(angle) * r
+                  );
+                  v.angularVelocity = THREE.Math.randFloat(0.1, Math.PI);
+                  vertices.push(v);
+                }
+                saturnRingGeom.vertices = vertices;
+                var saturnRing = new THREE.Points(saturnRingGeom, new THREE.PointsMaterial({
+                  size: 0.1,
+                  map: texRings
+                }));
                 planets[sphere.name].name = sphere.name;
-                innerRadius = (planets[sphere.name]["radius"] + 6.630) / planets[sphere.name]["radius"];
-                outerRadius = (planets[sphere.name]["radius"] + saturnOuterRadius) / planets[sphere.name]["radius"];
-                ring = createRing(innerRadius, outerRadius, ringSegments,texRings);
-                //ring.receiveShadow = true;
-                //ring.castShadow = true;
-                planets[sphere.name].add(ring);
-                scene.add(planets[sphere.name]);
+                saturnSys.add(planets[sphere.name]);
+                saturnSys.add(saturnRing);
+                scene.add(saturnSys);
                 break;
             case "uranus":
                 planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshPhongMaterial({
