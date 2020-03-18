@@ -170,7 +170,7 @@ function init() {
   // Light - Sun
   const light = new THREE.SpotLight(0xff0000);
   light.position.set(0, 1, 0);
-  const pointLight = new THREE.PointLight(0xffffff, 1.5, Infinity);
+  const pointLight = new THREE.PointLight(0xffffff, 1, Infinity);
   pointLight.position.set(0, 1, 0);
   scene.add(light);
   scene.add(pointLight);
@@ -320,7 +320,6 @@ function solarSystemCreate(scene, planets){
                 orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x056d64}));
                 orbit.rotateX(0.5 * Math.PI);
                 scene.add(orbit);
-                alert('ciao');
                 saturnRing = createRing(10.45 * ER, 15.45 * ER, 180, texRings);
                 planets[sphere.name].name = sphere.name;
                 saturnSys.add(planets[sphere.name]);
@@ -387,8 +386,8 @@ function createRing(radius, width, height, texture) {
     var material = new THREE.MeshPhongMaterial({
                                                    map: texture,
                                                    side: THREE.DoubleSide,
-                                                   transparent: false,
-                                                   opacity: 0.98
+                                                   transparent: true,
+                                                   opacity: 0.90
                                                });
     var ring = new THREE.Mesh(geometry, material);
     ring.position.set(sunSize + (9.53 * AU),0,0);
