@@ -11,7 +11,6 @@
 var renderer, scene, camera, descPanel;
 var cameraControls; //per il controllo della camera
 var planets = {sun: {}, mercury: {}, venus: {}, earth: {}, moon:{}, mars: {}, jupiter: {}, saturn: {}, uranus: {}, neptune: {}};
-var rings;
 var radius=0.45, segments=32;
 // Mouse interactive
 const raycaster = new THREE.Raycaster();
@@ -321,26 +320,8 @@ function solarSystemCreate(scene, planets){
                 orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x056d64}));
                 orbit.rotateX(0.5 * Math.PI);
                 scene.add(orbit);
-
-                //rings
-                var saturnRingGeom = new THREE.Geometry();
-                var vertices = [];
-                for (let i = 0; i < 4000; i++) {
-                  let r = THREE.Math.randFloat(1.5, 4);
-                  let angle = THREE.Math.randFloat(0, Math.PI * 2);
-                  let v = new THREE.Vector3(
-                    Math.cos(angle) * r,
-                    0,
-                    Math.sin(angle) * r
-                  );
-                  v.angularVelocity = THREE.Math.randFloat(0.1, Math.PI);
-                  vertices.push(v);
-                }
-                saturnRingGeom.vertices = vertices;
-                var saturnRing = new THREE.Points(saturnRingGeom, new THREE.PointsMaterial({
-                  size: 0.1,
-                  map: texRings
-                }));
+                alert('ciao');
+                saturnRing = createRing(9.45 * ER, 10.45 * ER, 180, texRings);
                 planets[sphere.name].name = sphere.name;
                 saturnSys.add(planets[sphere.name]);
                 saturnSys.add(saturnRing);
@@ -407,9 +388,9 @@ function createRing(radius, width, height, texture) {
                                                    transparent: true,
                                                    opacity: 0.8
                                                });
-    var mesh = new THREE.Mesh(geometry, material);
-    mesh.lookAt(new THREE.Vector3(0, 90, 0));
-    return mesh;
+    var ring = new THREE.Mesh(geometry, material);
+    ring.position.set(sunSize + (9.53 * AU),0,0);
+    return ring;
 }
 
 function updateAspectRatio(){
@@ -476,3 +457,24 @@ function displayData (object) {
         descPanel.style.display = "none";
     }
 }
+
+
+              /*  //rings
+                var saturnRingGeom = new THREE.Geometry();
+                var vertices = [];
+                for (let i = 0; i < 4000; i++) {
+                  let r = THREE.Math.randFloat(1.5, 4);
+                  let angle = THREE.Math.randFloat(0, Math.PI * 2);
+                  let v = new THREE.Vector3(
+                    Math.cos(angle) * r,
+                    0,
+                    Math.sin(angle) * r
+                  );
+                  v.angularVelocity = THREE.Math.randFloat(0.1, Math.PI);
+                  vertices.push(v);
+                }
+                saturnRingGeom.vertices = vertices;
+                var saturnRing = new THREE.Points(saturnRingGeom, new THREE.PointsMaterial({
+                  size: 0.1,
+                  map: texRings
+                }));*/
