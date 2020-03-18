@@ -241,7 +241,7 @@ function solarSystemCreate(scene, planets){
                     map: texEarth
                 }));
                 orbitCircle = new THREE.EllipseCurve(0, 0, sphere.distance, sphere.distance, 0, 2 * Math.PI, false, 0);
-                orbitEarth = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x056d64}));
+                orbitEarth = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x808080}));
                 orbitEarth.rotateX(0.5 * Math.PI);
                 scene.add(orbitEarth);
                 planets[sphere.name].name = sphere.name;
@@ -263,7 +263,7 @@ function solarSystemCreate(scene, planets){
                     map: texMercury
                   }));
                   orbitCircle = new THREE.EllipseCurve(0, 0, sphere.distance, sphere.distance, 0, 2 * Math.PI, false, 0);
-                  orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x056d64}));
+                  orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x808080}));
                   orbit.rotateX(0.5 * Math.PI);
                   scene.add(orbit);
                   planets[sphere.name].name = sphere.name;
@@ -277,7 +277,7 @@ function solarSystemCreate(scene, planets){
                 }));
                 // Create orbit
                 orbitCircle = new THREE.EllipseCurve(0, 0, sphere.distance, sphere.distance, 0, 2 * Math.PI, false, 0);
-                orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x056d64}));
+                orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x808080}));
                 orbit.rotateX(0.5 * Math.PI);
                 scene.add(orbit);
                 planets[sphere.name].name = sphere.name;
@@ -290,7 +290,7 @@ function solarSystemCreate(scene, planets){
                     map: texMars
                 }));
                 orbitCircle = new THREE.EllipseCurve(0, 0, sphere.distance, sphere.distance, 0, 2 * Math.PI, false, 0);
-                orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x056d64}));
+                orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x808080}));
                 orbit.rotateX(0.5 * Math.PI);
                 scene.add(orbit);
                 planets[sphere.name].name = sphere.name;
@@ -303,28 +303,28 @@ function solarSystemCreate(scene, planets){
                     map: texJupiter
                 }));
                 orbitCircle = new THREE.EllipseCurve(0, 0, sphere.distance, sphere.distance, 0, 2 * Math.PI, false, 0);
-                orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x056d64}));
+                orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x808080}));
                 orbit.rotateX(0.5 * Math.PI);
                 scene.add(orbit);
                 planets[sphere.name].name = sphere.name;
                 scene.add(planets[sphere.name]);
                 break;
             case "saturn":
-                var saturnSys = new THREE.Group();
+                //var saturnSys = new THREE.Group();
                 planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshPhongMaterial({
                     specular: 0x050505,
                     shininess: 100,
                     map: texSaturn
                 }));
                 orbitCircle = new THREE.EllipseCurve(0, 0, sphere.distance, sphere.distance, 0, 2 * Math.PI, false, 0);
-                orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x056d64}));
+                orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x808080}));
                 orbit.rotateX(0.5 * Math.PI);
                 scene.add(orbit);
-                saturnRing = createRing(10.45 * ER, 15.45 * ER, 180, texRings);
+                saturnRing = createRing(10.45 * ER, 15.45 * ER, 280, texRings);
                 planets[sphere.name].name = sphere.name;
-                saturnSys.add(planets[sphere.name]);
-                saturnSys.add(saturnRing);
-                scene.add(saturnSys);
+                //saturnSys.add(planets[sphere.name]);
+                scene.add(saturnRing);
+                scene.add(planets[sphere.name]);
                 break;
             case "uranus":
                 planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshPhongMaterial({
@@ -333,7 +333,7 @@ function solarSystemCreate(scene, planets){
                     map: texUranus
                 }));
                 orbitCircle = new THREE.EllipseCurve(0, 0, sphere.distance, sphere.distance, 0, 2 * Math.PI, false, 0);
-                orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x056d64}));
+                orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x808080}));
                 orbit.rotateX(0.5 * Math.PI);
                 scene.add(orbit);
                 planets[sphere.name].name = sphere.name;
@@ -346,7 +346,7 @@ function solarSystemCreate(scene, planets){
                     map: texNeptune
                 }));
                 orbitCircle = new THREE.EllipseCurve(0, 0, sphere.distance, sphere.distance, 0, 2 * Math.PI, false, 0);
-                orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x056d64}));
+                orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x808080}));
                 orbit.rotateX(0.5 * Math.PI);
                 scene.add(orbit);
                 planets[sphere.name].name = sphere.name;
@@ -381,7 +381,6 @@ function solarSystemMove(planets){
 }
 
 function createRing(radius, width, height, texture) {
-
     var geometry = new THREE.RingGeometry(radius, width, height);
     var material = new THREE.MeshPhongMaterial({
                                                    map: texture,
