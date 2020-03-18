@@ -325,7 +325,7 @@ function solarSystemCreate(scene, planets){
                 //rings
                 var saturnRingGeom = new THREE.Geometry();
                 var vertices = [];
-                for (let i = 0; i < 2000; i++) {
+                for (let i = 0; i < 4000; i++) {
                   let r = THREE.Math.randFloat(1.5, 4);
                   let angle = THREE.Math.randFloat(0, Math.PI * 2);
                   let v = new THREE.Vector3(
