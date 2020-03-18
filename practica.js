@@ -170,13 +170,13 @@ function init() {
   // Light - Sun
   const light = new THREE.SpotLight(0xff0000);
   light.position.set(0, 1, 0);
-  const pointLight = new THREE.PointLight(0xffffff, 1, Infinity);
+  const pointLight = new THREE.PointLight(0xffffff, 3, Infinity);
   pointLight.position.set(0, 1, 0);
   scene.add(light);
   scene.add(pointLight);
 
   //Light Ambient
-  var lightAmb = new THREE.AmbientLight( 0x404040 ); // soft white light
+  var lightAmb = new THREE.AmbientLight( 0x404040); // soft white light
   scene.add( lightAmb );
 
   camera.position.set(10, 40, 100);
@@ -387,11 +387,12 @@ function createRing(radius, width, height, texture) {
     var material = new THREE.MeshPhongMaterial({
                                                    map: texture,
                                                    side: THREE.DoubleSide,
-                                                   transparent: true,
-                                                   opacity: 0.8
+                                                   transparent: false,
+                                                   opacity: 0.98
                                                });
     var ring = new THREE.Mesh(geometry, material);
     ring.position.set(sunSize + (9.53 * AU),0,0);
+    ring.rotation.x = Math.PI / 2;
     return ring;
 }
 
