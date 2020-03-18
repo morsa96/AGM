@@ -57,14 +57,6 @@ var solarSystemData = [
         lineSpeed: (2 * Math.PI / 1000) * AU,
     },
     {
-        name: 'moon',
-        radius: 0.2727 * ER,
-        distance: sunSize + AU + 2*ER,
-        rotate: 0.01,
-        orbit: 2 * Math.PI * AU,
-        lineSpeed: (2 * Math.PI / 1000) * AU,
-    },
-    {
         name: 'mars',
         radius: 0.53 * ER,
         distance: sunSize + (1.523 * AU),
@@ -114,8 +106,6 @@ const dataArray = {
     'venus' : '<h2> Venus </h2> <p> Venus is the second planet from the Sun. It is named after the Roman goddess of love and beauty. </p> <p> As the second-brightest natural object in the night sky after the Moon, Venus can cast shadows and, rarely, is visible to the naked eye in broad daylight. With a rotation period of 243 Earth days, it takes longer to rotate about its axis than any planet in the Solar System and does so in the opposite direction to all but Uranus (meaning the Sun rises in the west and sets in the east). </p> <p> Venus does not have any moons, a distinction it shares only with Mercury among planets in the Solar System </p>',
 
     'earth' : ' <h2> Earth </h2> <p> Earth is the third planet from the Sun and the only astronomical object known to harbor life. According to radiometric dating and other evidence, Earth formed over 4.5 billion years ago. The gravity interacts with other objects in space, especially the Sun and the Moon, which is the only natural satellite of Earth.</p>    ',
-
-    'moon' : '<h2> Moon </h2> <p> The Moon is an astronomical body orbiting Earth as its only natural satellite. It is the fifth-largest satellite in the Solar System, and by far the largest among planetary satellites relative to the size of the planet that it orbits (its primary). </p>',
 
     'mars' : ' <h2> Mars </h2> <p> Mars is the fourth planet from the Sun and the second-smallest planet in the Solar System after Mercury. It is often referred to as the Red Planet and this refers to the effect of the iron oxide prevalent on Mars surface, which gives it a reddish appearance distinctive among the astronomical bodies visible to the naked eye.</p>  <p> Mars has surface features reminiscent both of the impact craters of the Moon and the valleys, deserts, and polar ice caps of Earth </p>  ',
 
@@ -213,7 +203,6 @@ function solarSystemCreate(scene, planets){
     var texSaturn = loader.load(path+"2k_saturn.jpg");
     var texUranus = loader.load(path+"2k_uranus.jpg");
     var texNeptune = loader.load(path+"2k_neptune.jpg");
-    var texMoon = loader.load(path+"2k_moon.jpg");
     var texRings = loader.load(path+"2k_saturn_ring_alpha.png");
 
     var ringSegments = 70;
@@ -242,16 +231,6 @@ function solarSystemCreate(scene, planets){
                 orbitEarth = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x808080}));
                 orbitEarth.rotateX(0.5 * Math.PI);
                 scene.add(orbitEarth);
-                planets[sphere.name].name = sphere.name;
-                planets[sphere.name].receiveShadow = planets[sphere.name].castShadow = true;
-                scene.add(planets[sphere.name]);
-                break;
-            case "moon":
-                planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshPhongMaterial({
-                  specular: 0x050505,
-                  shininess: 100,
-                  map : texMoon
-                }));
                 planets[sphere.name].name = sphere.name;
                 planets[sphere.name].receiveShadow = planets[sphere.name].castShadow = true;
                 scene.add(planets[sphere.name]);
@@ -323,7 +302,7 @@ function solarSystemCreate(scene, planets){
                 orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x808080}));
                 orbit.rotateX(0.5 * Math.PI);
                 scene.add(orbit);
-                saturnRing = createRing(10.45 * ER, 15.45 * ER, 280, texRings);
+                saturnRing = createRing(10.45 * ER, 20.45 * ER, 280, texRings);
                 planets[sphere.name].name = sphere.name;
                 planets[sphere.name].receiveShadow = planets[sphere.name].castShadow = true;
                 scene.add(saturnRing);
