@@ -170,7 +170,7 @@ function init() {
   // Light - Sun
   const light = new THREE.SpotLight(0xff0000);
   light.position.set(0, 1, 0);
-  const pointLight = new THREE.PointLight(0xffffff, 3, Infinity);
+  const pointLight = new THREE.PointLight(0xffffff, 1.5, Infinity);
   pointLight.position.set(0, 1, 0);
   scene.add(light);
   scene.add(pointLight);
