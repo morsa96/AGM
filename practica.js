@@ -321,7 +321,7 @@ function solarSystemCreate(scene, planets){
                 orbit.rotateX(0.5 * Math.PI);
                 scene.add(orbit);
                 alert('ciao');
-                saturnRing = createRing(9.45 * ER, 10.45 * ER, 180, texRings);
+                saturnRing = createRing(10.45 * ER, 15.45 * ER, 180, texRings);
                 planets[sphere.name].name = sphere.name;
                 saturnSys.add(planets[sphere.name]);
                 saturnSys.add(saturnRing);
@@ -365,17 +365,19 @@ function solarSystemCreate(scene, planets){
  */
 function solarSystemMove(planets){
     solarSystemData.map(sphere => {
-        /*if (sphere.name == "moon"){
+        if (sphere.name == "saturn"){
             sphere.orbit += sphere.lineSpeed * 0.01;
             planets[sphere.name].rotateY(sphere.rotate);
             planets[sphere.name].position.x = Math.cos(sphere.orbit) * sphere.distance;
             planets[sphere.name].position.z = Math.sin(sphere.orbit) * sphere.distance;
-        }else{*/
+            saturnRing.position.x = Math.cos(sphere.orbit) * sphere.distance;
+            saturnRing.position.z = Math.sin(sphere.orbit) * sphere.distance;
+        }else{
             sphere.orbit += sphere.lineSpeed * 0.01;
             planets[sphere.name].rotateY(sphere.rotate); //su se stesso
             planets[sphere.name].position.x = Math.cos(sphere.orbit) * sphere.distance;
             planets[sphere.name].position.z = Math.sin(sphere.orbit) * sphere.distance;
-        //}
+        }
     });
 }
 
