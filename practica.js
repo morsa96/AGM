@@ -4,9 +4,7 @@
  * @date: 02-03-2020
  */
 
-//aggiungere il cast luce per ogni pianeta
 //il controllo in qualcosa
-//una luce ambientale
 // variables globales estandar
 var renderer, scene, camera, descPanel;
 var cameraControls; //per il controllo della camera
@@ -24,7 +22,6 @@ const sunSize = 1; // Realistic 109 - number of earth radius
  * Main object with data about all sphere in our solar system
  * @type {[object]}
  */
-
 
 var solarSystemData = [
     {
@@ -240,6 +237,8 @@ function solarSystemCreate(scene, planets){
                     shininess: 100,
                     map: texEarth
                 }));
+                planets[sphere.name].receiveShadow = planets[sphere.name].castShadow = true;
+
                 orbitCircle = new THREE.EllipseCurve(0, 0, sphere.distance, sphere.distance, 0, 2 * Math.PI, false, 0);
                 orbitEarth = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x808080}));
                 orbitEarth.rotateX(0.5 * Math.PI);
@@ -262,6 +261,8 @@ function solarSystemCreate(scene, planets){
                     shininess: 100,
                     map: texMercury
                   }));
+                  planets[sphere.name].receiveShadow = planets[sphere.name].castShadow = true;
+
                   orbitCircle = new THREE.EllipseCurve(0, 0, sphere.distance, sphere.distance, 0, 2 * Math.PI, false, 0);
                   orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x808080}));
                   orbit.rotateX(0.5 * Math.PI);
@@ -275,7 +276,8 @@ function solarSystemCreate(scene, planets){
                     shininess: 100,
                     map: texVenus
                 }));
-                // Create orbit
+                planets[sphere.name].receiveShadow = planets[sphere.name].castShadow = true;
+
                 orbitCircle = new THREE.EllipseCurve(0, 0, sphere.distance, sphere.distance, 0, 2 * Math.PI, false, 0);
                 orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x808080}));
                 orbit.rotateX(0.5 * Math.PI);
@@ -289,6 +291,8 @@ function solarSystemCreate(scene, planets){
                     shininess: 100,
                     map: texMars
                 }));
+                planets[sphere.name].receiveShadow = planets[sphere.name].castShadow = true;
+
                 orbitCircle = new THREE.EllipseCurve(0, 0, sphere.distance, sphere.distance, 0, 2 * Math.PI, false, 0);
                 orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x808080}));
                 orbit.rotateX(0.5 * Math.PI);
@@ -302,6 +306,8 @@ function solarSystemCreate(scene, planets){
                     shininess: 100,
                     map: texJupiter
                 }));
+                planets[sphere.name].receiveShadow = planets[sphere.name].castShadow = true;
+
                 orbitCircle = new THREE.EllipseCurve(0, 0, sphere.distance, sphere.distance, 0, 2 * Math.PI, false, 0);
                 orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x808080}));
                 orbit.rotateX(0.5 * Math.PI);
@@ -316,6 +322,8 @@ function solarSystemCreate(scene, planets){
                     shininess: 100,
                     map: texSaturn
                 }));
+                planets[sphere.name].receiveShadow = planets[sphere.name].castShadow = true;
+
                 orbitCircle = new THREE.EllipseCurve(0, 0, sphere.distance, sphere.distance, 0, 2 * Math.PI, false, 0);
                 orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x808080}));
                 orbit.rotateX(0.5 * Math.PI);
@@ -332,6 +340,8 @@ function solarSystemCreate(scene, planets){
                     shininess: 100,
                     map: texUranus
                 }));
+                planets[sphere.name].receiveShadow = planets[sphere.name].castShadow = true;
+
                 orbitCircle = new THREE.EllipseCurve(0, 0, sphere.distance, sphere.distance, 0, 2 * Math.PI, false, 0);
                 orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x808080}));
                 orbit.rotateX(0.5 * Math.PI);
@@ -345,6 +355,8 @@ function solarSystemCreate(scene, planets){
                     shininess: 100,
                     map: texNeptune
                 }));
+                planets[sphere.name].receiveShadow = planets[sphere.name].castShadow = true;
+
                 orbitCircle = new THREE.EllipseCurve(0, 0, sphere.distance, sphere.distance, 0, 2 * Math.PI, false, 0);
                 orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x808080}));
                 orbit.rotateX(0.5 * Math.PI);
@@ -458,24 +470,3 @@ function displayData (object) {
         descPanel.style.display = "none";
     }
 }
-
-
-              /*  //rings
-                var saturnRingGeom = new THREE.Geometry();
-                var vertices = [];
-                for (let i = 0; i < 4000; i++) {
-                  let r = THREE.Math.randFloat(1.5, 4);
-                  let angle = THREE.Math.randFloat(0, Math.PI * 2);
-                  let v = new THREE.Vector3(
-                    Math.cos(angle) * r,
-                    0,
-                    Math.sin(angle) * r
-                  );
-                  v.angularVelocity = THREE.Math.randFloat(0.1, Math.PI);
-                  vertices.push(v);
-                }
-                saturnRingGeom.vertices = vertices;
-                var saturnRing = new THREE.Points(saturnRingGeom, new THREE.PointsMaterial({
-                  size: 0.1,
-                  map: texRings
-                }));*/
