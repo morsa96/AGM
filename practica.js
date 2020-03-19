@@ -4,7 +4,6 @@
  * @date: 02-03-2020
  */
 
- //import {dataArray} from './Planets';
 //il controllo in qualcosa
 // variables globales estandar
 var renderer, scene, camera, descPanel;
@@ -79,7 +78,7 @@ var solarSystemData = [
         distance: sunSize + (5.2 * AU),
         rotate: 0.09,
         orbit: 2 * Math.PI * AU * AU,
-        lineSpeed: (2 * Math.PI / 11000) * AU,
+        lineSpeed: (2 * Math.PI / 9000) * AU,
     },
     {
         name: 'saturn',
@@ -129,13 +128,14 @@ const dataArray = {
     'neptune' : ' <h2> Neptune </h2>  <p>Neptune is the eighth and farthest known planet from the Sun in the Solar System. In the Solar System, it is the fourth-largest planet by diameter, the third-most-massive planet, and the densest giant planet. </p><p> Neptune is 17 times the mass of Earth, slightly more massive than its near-twin Uranus. Neptune is denser and physically smaller than Uranus because its greater mass causes more gravitational compression of its atmosphere. </p> ',
 
 }
+/*
 const helpers = (scene) => {
     const axis = new THREE.AxisHelper(20);
     scene.add(axis);
     const radius = 20;    const radials = 20;    const circles = 20;    const divisions = 64;
     const gridHelper = new THREE.PolarGridHelper( radius, radials, circles, divisions );
     scene.add(gridHelper);
-};
+};*/
 
 init();
 render();
@@ -149,13 +149,14 @@ function init() {
   renderer = new THREE.WebGLRenderer({antialias: true, alpha:true});
   renderer.setSize(window.innerWidth * 0.99, window.innerHeight * 0.99);
   document.body.appendChild(renderer.domElement);
+  renderer.shadowMapEnabled = true;
 
   //Escena
   scene = new THREE.Scene();
 
   //Camara perspectiva
   var aspectRatio = window.innerWidth / window.innerHeight;
-  camera = new THREE.PerspectiveCamera(50, aspectRatio, 1, 1000);
+  camera = new THREE.PerspectiveCamera(20, aspectRatio, 0.1, 1000);
   camera.position.z = 1;
 
   var cameraControls = new THREE.OrbitControls( camera, renderer.domElement );
@@ -166,19 +167,20 @@ function init() {
   descPanel = document.getElementById('description');
 
   // Light - Sun
-  const light = new THREE.SpotLight(0xff0000);
+  /*const light = new THREE.SpotLight(0xff0000);
   light.position.set(0, 1, 0);
+  light.castShadow = true;*/
   const pointLight = new THREE.PointLight(0xffffff, 1, Infinity);
   pointLight.position.set(0, 1, 0);
-  scene.add(light);
+  pointLight.castShadow = true;
+  //scene.add(light);
   scene.add(pointLight);
 
   //Light Ambient
   var lightAmb = new THREE.AmbientLight( 0x404040); // soft white light
   scene.add( lightAmb );
 
-  camera.position.set(10, 40, 100);
-  //controls.update();
+  camera.position.set(1, 1, 100);
 
   // Create Solar System
   solarSystemCreate(scene, planets);
@@ -221,7 +223,6 @@ function solarSystemCreate(scene, planets){
     var innerRadius, outerRadius, ring;
     var saturnOuterRadius = 9.45 * ER;
 
-
     texSun.minFilter = THREE.LinearFilter;
     texSun.magFilter = THREE.LinearFilter;
 
@@ -230,7 +231,6 @@ function solarSystemCreate(scene, planets){
             case "sun":
                 planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshBasicMaterial({ map: texSun}));
                 planets[sphere.name].name = sphere.name;
-                planets[sphere.name].castShadow = true;
                 scene.add(planets[sphere.name]);
                 break;
             case "moon":
@@ -240,11 +240,11 @@ function solarSystemCreate(scene, planets){
                   map : texMoon
                 }));
                 planets[sphere.name].name = sphere.name;
-                planets[sphere.name].receiveShadow = planets[sphere.name].castShadow = true;
+                planets[sphere.name].receiveShadow = true;
                 scene.add(planets[sphere.name]);
                 break;
             case "earth":
-                planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshPhongMaterial({
+                planets[sphere.name] = new THREE.Mesh(new THREE.SphereBufferGeometry(sphere.radius, 32, 32), new THREE.MeshPhongMaterial({
                     specular: 0x050505,
                     shininess: 100,
                     map: texEarth
@@ -300,7 +300,7 @@ function solarSystemCreate(scene, planets){
                 scene.add(planets[sphere.name]);
                 break;
             case "jupiter":
-                planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshPhongMaterial({
+                planets[sphere.name] = new THREE.Mesh(new THREE.SphereBufferGeometry(sphere.radius, 32, 32), new THREE.MeshPhongMaterial({
                     specular: 0x050505,
                     shininess: 100,
                     map: texJupiter
@@ -359,10 +359,15 @@ function solarSystemCreate(scene, planets){
                 break;
             }
         });
-
+        solarSystemData.map(sphere => {
+          planets[sphere.name].traverse( function ( child ) {
+            if ( child instanceof THREE.Mesh ) {
+              child.castShadow = true;
+            }
+          })
+        });
     renderer.domElement.addEventListener('click',onMouseMove);
 }
-
 /**
  * Map all planets and change it position, rotation etc.
  * @param {object} planets
@@ -415,7 +420,6 @@ function updateAspectRatio(){
  * Animate object on scene
  */
 function animate() {
-    //cameraControls.update();
     solarSystemMove(planets);
 }
 
@@ -452,7 +456,6 @@ function onMouseMove(event) {
  * Display information about planets
  * @param {object} object
 */
-
 function displayData (object) {
     if(object.name !== ''){
         const data = dataArray[object.name];
