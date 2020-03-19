@@ -1,5 +1,5 @@
 /**
- * Practica 2
+ * Trabajo 1
  * @author Marco Morsiani Cassani
  * @date: 02-03-2020
  */
@@ -9,7 +9,6 @@
 var renderer, scene, camera, descPanel;
 var cameraControls; //per il controllo della camera
 var planets = {sun: {}, mercury: {}, venus: {}, earth: {}, moon:{}, mars: {}, jupiter: {}, saturn: {}, uranus: {}, neptune: {}};
-var radius=0.45, segments=32;
 // Mouse interactive
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
@@ -31,6 +30,14 @@ var solarSystemData = [
         rotate: 0.01,
         orbit: 2 * Math.PI * AU * AU,
         lineSpeed: 0 //non ruota
+    },
+    {
+        name: 'moon',
+        radius: 0.2727 * ER,
+        distance: sunSize + AU + 2*ER,
+        rotate: 0.01,
+        orbit: 2 * Math.PI * AU,
+        lineSpeed: (2 * Math.PI / 1000) * AU,
     },
     {
         name: 'mercury',
@@ -107,6 +114,8 @@ const dataArray = {
 
     'earth' : ' <h2> Earth </h2> <p> Earth is the third planet from the Sun and the only astronomical object known to harbor life. According to radiometric dating and other evidence, Earth formed over 4.5 billion years ago. The gravity interacts with other objects in space, especially the Sun and the Moon, which is the only natural satellite of Earth.</p>    ',
 
+    'moon' : '<h2> Moon </h2> <p> The Moon is an astronomical body orbiting Earth as its only natural satellite. It is the fifth-largest satellite in the Solar System, and by far the largest among planetary satellites relative to the size of the planet that it orbits (its primary). </p>',
+
     'mars' : ' <h2> Mars </h2> <p> Mars is the fourth planet from the Sun and the second-smallest planet in the Solar System after Mercury. It is often referred to as the Red Planet and this refers to the effect of the iron oxide prevalent on Mars surface, which gives it a reddish appearance distinctive among the astronomical bodies visible to the naked eye.</p>  <p> Mars has surface features reminiscent both of the impact craters of the Moon and the valleys, deserts, and polar ice caps of Earth </p>  ',
 
     'jupiter' : ' <h2> Jupiter  </h2>  <p>Jupiter is the fifth planet from the Sun and the largest in the Solar System. It is a gas giant with a mass one-thousandth that of the Sun, but two-and-a-half times that of all the other planets in the Solar System combined. Jupiter is one of the brightest objects visible to the naked eye in the night sky. </p> <p> When viewed from Earth, Jupiter can be bright enough for its reflected light to cast shadows, and is on average the third-brightest natural object in the night sky after the Moon and Venus. </p>   ',
@@ -118,13 +127,14 @@ const dataArray = {
     'neptune' : ' <h2> Neptune </h2>  <p>Neptune is the eighth and farthest known planet from the Sun in the Solar System. In the Solar System, it is the fourth-largest planet by diameter, the third-most-massive planet, and the densest giant planet. </p><p> Neptune is 17 times the mass of Earth, slightly more massive than its near-twin Uranus. Neptune is denser and physically smaller than Uranus because its greater mass causes more gravitational compression of its atmosphere. </p> ',
 
 }
+/*
 const helpers = (scene) => {
     const axis = new THREE.AxisHelper(20);
     scene.add(axis);
     const radius = 20;    const radials = 20;    const circles = 20;    const divisions = 64;
     const gridHelper = new THREE.PolarGridHelper( radius, radials, circles, divisions );
     scene.add(gridHelper);
-};
+};*/
 
 init();
 render();
@@ -144,7 +154,7 @@ function init() {
 
   //Camara perspectiva
   var aspectRatio = window.innerWidth / window.innerHeight;
-  camera = new THREE.PerspectiveCamera(100, aspectRatio, 0.01, 1000);
+  camera = new THREE.PerspectiveCamera(10, aspectRatio, 0.1, 100);
   camera.position.z = 1;
 
   var cameraControls = new THREE.OrbitControls( camera, renderer.domElement );
@@ -204,11 +214,11 @@ function solarSystemCreate(scene, planets){
     var texUranus = loader.load(path+"2k_uranus.jpg");
     var texNeptune = loader.load(path+"2k_neptune.jpg");
     var texRings = loader.load(path+"2k_saturn_ring_alpha.png");
+    var texMoon = loader.load(path+"2k_moon.jpg");
 
     var ringSegments = 70;
     var innerRadius, outerRadius, ring;
     var saturnOuterRadius = 9.45 * ER;
-
 
     texSun.minFilter = THREE.LinearFilter;
     texSun.magFilter = THREE.LinearFilter;
@@ -219,6 +229,16 @@ function solarSystemCreate(scene, planets){
                 planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshBasicMaterial({ map: texSun}));
                 planets[sphere.name].name = sphere.name;
                 planets[sphere.name].castShadow = true;
+                scene.add(planets[sphere.name]);
+                break;
+            case "moon":
+                planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshPhongMaterial({
+                  specular: 0x050505,
+                  shininess: 100,
+                  map : texMoon
+                }));
+                planets[sphere.name].name = sphere.name;
+                planets[sphere.name].receiveShadow = planets[sphere.name].castShadow = true;
                 scene.add(planets[sphere.name]);
                 break;
             case "earth":
@@ -292,7 +312,6 @@ function solarSystemCreate(scene, planets){
                 scene.add(planets[sphere.name]);
                 break;
             case "saturn":
-                //var saturnSys = new THREE.Group();
                 planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshPhongMaterial({
                     specular: 0x050505,
                     shininess: 100,
@@ -338,7 +357,6 @@ function solarSystemCreate(scene, planets){
                 break;
             }
         });
-
     renderer.domElement.addEventListener('click',onMouseMove);
 }
 
@@ -413,8 +431,8 @@ function onMouseMove(event) {
     // Calculate mouse position in normalized device coordinates
     // (-1 to +1) for both components
     //event.preventDefault();
-    mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
-    mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
+    mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 4 - 1;
+    mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 4 + 1;
     raycaster.setFromCamera( mouse, camera );
     // Calculate objects intersecting the picking ray
     const intersects = raycaster.intersectObjects(scene.children);
