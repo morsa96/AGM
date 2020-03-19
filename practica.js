@@ -4,6 +4,7 @@
  * @date: 02-03-2020
  */
 
+ //import {dataArray} from './Planets';
 //il controllo in qualcosa
 // variables globales estandar
 var renderer, scene, camera, descPanel;
@@ -154,7 +155,7 @@ function init() {
 
   //Camara perspectiva
   var aspectRatio = window.innerWidth / window.innerHeight;
-  camera = new THREE.PerspectiveCamera(10, aspectRatio, 0.1, 100);
+  camera = new THREE.PerspectiveCamera(100, aspectRatio, 0.01, 1000);
   camera.position.z = 1;
 
   var cameraControls = new THREE.OrbitControls( camera, renderer.domElement );
