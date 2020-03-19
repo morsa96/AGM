@@ -155,7 +155,7 @@ function init() {
 
   //Camara perspectiva
   var aspectRatio = window.innerWidth / window.innerHeight;
-  camera = new THREE.PerspectiveCamera(100, aspectRatio, 0.01, 1000);
+  camera = new THREE.PerspectiveCamera(50, aspectRatio, 1, 1000);
   camera.position.z = 1;
 
   var cameraControls = new THREE.OrbitControls( camera, renderer.domElement );
