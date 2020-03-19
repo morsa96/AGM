@@ -9,6 +9,7 @@
 var renderer, scene, camera, descPanel;
 var cameraControls; //per il controllo della camera
 var planets = {sun: {}, mercury: {}, venus: {}, earth: {}, moon:{}, mars: {}, jupiter: {}, saturn: {}, uranus: {}, neptune: {}};
+var radius=0.45, segments=32;
 // Mouse interactive
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
@@ -127,14 +128,13 @@ const dataArray = {
     'neptune' : ' <h2> Neptune </h2>  <p>Neptune is the eighth and farthest known planet from the Sun in the Solar System. In the Solar System, it is the fourth-largest planet by diameter, the third-most-massive planet, and the densest giant planet. </p><p> Neptune is 17 times the mass of Earth, slightly more massive than its near-twin Uranus. Neptune is denser and physically smaller than Uranus because its greater mass causes more gravitational compression of its atmosphere. </p> ',
 
 }
-/*
 const helpers = (scene) => {
     const axis = new THREE.AxisHelper(20);
     scene.add(axis);
     const radius = 20;    const radials = 20;    const circles = 20;    const divisions = 64;
     const gridHelper = new THREE.PolarGridHelper( radius, radials, circles, divisions );
     scene.add(gridHelper);
-};*/
+};
 
 init();
 render();
@@ -213,12 +213,13 @@ function solarSystemCreate(scene, planets){
     var texSaturn = loader.load(path+"2k_saturn.jpg");
     var texUranus = loader.load(path+"2k_uranus.jpg");
     var texNeptune = loader.load(path+"2k_neptune.jpg");
-    var texRings = loader.load(path+"2k_saturn_ring_alpha.png");
+    var texRings = loader.load(path+"2k_saturn_ring_alpha.png");var texMoon = loader.load(path+"2k_moon.jpg");
     var texMoon = loader.load(path+"2k_moon.jpg");
 
     var ringSegments = 70;
     var innerRadius, outerRadius, ring;
     var saturnOuterRadius = 9.45 * ER;
+
 
     texSun.minFilter = THREE.LinearFilter;
     texSun.magFilter = THREE.LinearFilter;
@@ -357,6 +358,7 @@ function solarSystemCreate(scene, planets){
                 break;
             }
         });
+
     renderer.domElement.addEventListener('click',onMouseMove);
 }
 
@@ -431,8 +433,8 @@ function onMouseMove(event) {
     // Calculate mouse position in normalized device coordinates
     // (-1 to +1) for both components
     //event.preventDefault();
-    mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 4 - 1;
-    mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 4 + 1;
+    mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
+    mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
     raycaster.setFromCamera( mouse, camera );
     // Calculate objects intersecting the picking ray
     const intersects = raycaster.intersectObjects(scene.children);
