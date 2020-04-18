@@ -9,10 +9,10 @@
 var renderer, scene, camera, descPanel;
 var cameraControls; //per il controllo della camera
 var planets = {sun: {}, mercury: {}, venus: {}, earth: {}, moon:{}, mars: {}, jupiter: {}, saturn: {}, uranus: {}, neptune: {}};
-var radius=0.45, segments=32;
-// Mouse interactive
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
+
+// custom global variables
+var targetList = [];
+var mouse = { x: 0, y: 0 }; //set the x and y to 0
 
 const AU = 5;
 const ER = 0.5; // Earth Radius
@@ -78,7 +78,7 @@ var solarSystemData = [
         distance: sunSize + (5.2 * AU),
         rotate: 0.09,
         orbit: 2 * Math.PI * AU * AU,
-        lineSpeed: (2 * Math.PI / 9000) * AU,
+        lineSpeed: (2 * Math.PI / 4000) * AU,
     },
     {
         name: 'saturn',
@@ -128,14 +128,6 @@ const dataArray = {
     'neptune' : ' <h2> Neptune </h2>  <p>Neptune is the eighth and farthest known planet from the Sun in the Solar System. In the Solar System, it is the fourth-largest planet by diameter, the third-most-massive planet, and the densest giant planet. </p><p> Neptune is 17 times the mass of Earth, slightly more massive than its near-twin Uranus. Neptune is denser and physically smaller than Uranus because its greater mass causes more gravitational compression of its atmosphere. </p> ',
 
 }
-/*
-const helpers = (scene) => {
-    const axis = new THREE.AxisHelper(20);
-    scene.add(axis);
-    const radius = 20;    const radials = 20;    const circles = 20;    const divisions = 64;
-    const gridHelper = new THREE.PolarGridHelper( radius, radials, circles, divisions );
-    scene.add(gridHelper);
-};*/
 
 init();
 render();
@@ -146,10 +138,11 @@ function init() {
   // Funcion de inicializacion de motor, escena y camara
   // Motor de render
 
-  renderer = new THREE.WebGLRenderer({antialias: true, alpha:true});
-  renderer.setSize(window.innerWidth * 0.99, window.innerHeight * 0.99);
-  document.body.appendChild(renderer.domElement);
-  renderer.shadowMapEnabled = true;
+  renderer = new THREE.WebGLRenderer();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio( window.devicePixelRatio );
+  document.getElementById("container").appendChild(renderer.domElement);
+  renderer.shadowMap.enabled = true;
 
   //Escena
   scene = new THREE.Scene();
@@ -167,9 +160,6 @@ function init() {
   descPanel = document.getElementById('description');
 
   // Light - Sun
-  /*const light = new THREE.SpotLight(0xff0000);
-  light.position.set(0, 1, 0);
-  light.castShadow = true;*/
   const pointLight = new THREE.PointLight(0xffffff, 1, Infinity);
   pointLight.position.set(0, 1, 0);
   pointLight.castShadow = true;
@@ -180,7 +170,8 @@ function init() {
   var lightAmb = new THREE.AmbientLight( 0x404040); // soft white light
   scene.add( lightAmb );
 
-  camera.position.set(1, 1, 100);
+  camera.position.set(0, 0, 50);
+  cameraControls.update();
 
   // Create Solar System
   solarSystemCreate(scene, planets);
@@ -188,7 +179,6 @@ function init() {
   //se modifico la finestra del browser, l'immagine viene tagliata dove diminuisco
   //se invece voglio che l'immagini si dimensioni di conseguenza, creo una funzione
   window.addEventListener('resize', updateAspectRatio);
-
 }
 /**
  * Create planets and sun then save to global object
@@ -206,8 +196,6 @@ function solarSystemCreate(scene, planets){
     scene.background = bgTexture;
 
     var texSun = loader.load( path+"2k_sun.jpg"); //carico l'immagine da posizionare sul cubo
-    //texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-    //texture.matrixAutoUpdate = false;
     var texEarth = loader.load(path+"2k_earth_daymap.jpg");
     var texMercury = loader.load(path+"2k_mercury.jpg");
     var texVenus = loader.load(path+"2k_venus_surface.jpg");
@@ -219,9 +207,8 @@ function solarSystemCreate(scene, planets){
     var texRings = loader.load(path+"2k_saturn_ring_alpha.png");var texMoon = loader.load(path+"2k_moon.jpg");
     var texMoon = loader.load(path+"2k_moon.jpg");
 
-    var ringSegments = 70;
-    var innerRadius, outerRadius, ring;
-    var saturnOuterRadius = 9.45 * ER;
+    var innerRadius = 10.45 * ER; //of saturn's rings
+    var outerRadius = 20.45 * ER; //of saturn's rings
 
     texSun.minFilter = THREE.LinearFilter;
     texSun.magFilter = THREE.LinearFilter;
@@ -232,6 +219,7 @@ function solarSystemCreate(scene, planets){
                 planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshBasicMaterial({ map: texSun}));
                 planets[sphere.name].name = sphere.name;
                 scene.add(planets[sphere.name]);
+                targetList.push(planets[sphere.name]);
                 break;
             case "moon":
                 planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshPhongMaterial({
@@ -242,9 +230,10 @@ function solarSystemCreate(scene, planets){
                 planets[sphere.name].name = sphere.name;
                 planets[sphere.name].receiveShadow = true;
                 scene.add(planets[sphere.name]);
+                targetList.push(planets[sphere.name]);
                 break;
             case "earth":
-                planets[sphere.name] = new THREE.Mesh(new THREE.SphereBufferGeometry(sphere.radius, 32, 32), new THREE.MeshPhongMaterial({
+                planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshPhongMaterial({
                     specular: 0x050505,
                     shininess: 100,
                     map: texEarth
@@ -256,6 +245,7 @@ function solarSystemCreate(scene, planets){
                 planets[sphere.name].name = sphere.name;
                 planets[sphere.name].receiveShadow = planets[sphere.name].castShadow = true;
                 scene.add(planets[sphere.name]);
+                targetList.push(planets[sphere.name]);
                 break;
             case "mercury":
                 planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshPhongMaterial({
@@ -270,6 +260,7 @@ function solarSystemCreate(scene, planets){
                   planets[sphere.name].name = sphere.name;
                   planets[sphere.name].receiveShadow = planets[sphere.name].castShadow = true;
                   scene.add(planets[sphere.name]);
+                  targetList.push(planets[sphere.name]);
                   break;
             case "venus":
                 planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshPhongMaterial({
@@ -284,6 +275,7 @@ function solarSystemCreate(scene, planets){
                 planets[sphere.name].name = sphere.name;
                 planets[sphere.name].receiveShadow = planets[sphere.name].castShadow = true;
                 scene.add(planets[sphere.name]);
+                targetList.push(planets[sphere.name]);
                 break;
             case "mars":
                 planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshPhongMaterial({
@@ -298,9 +290,10 @@ function solarSystemCreate(scene, planets){
                 planets[sphere.name].name = sphere.name;
                 planets[sphere.name].receiveShadow = planets[sphere.name].castShadow = true;
                 scene.add(planets[sphere.name]);
+                targetList.push(planets[sphere.name]);
                 break;
             case "jupiter":
-                planets[sphere.name] = new THREE.Mesh(new THREE.SphereBufferGeometry(sphere.radius, 32, 32), new THREE.MeshPhongMaterial({
+                planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshPhongMaterial({
                     specular: 0x050505,
                     shininess: 100,
                     map: texJupiter
@@ -312,6 +305,7 @@ function solarSystemCreate(scene, planets){
                 planets[sphere.name].name = sphere.name;
                 planets[sphere.name].receiveShadow = planets[sphere.name].castShadow = true;
                 scene.add(planets[sphere.name]);
+                targetList.push(planets[sphere.name]);
                 break;
             case "saturn":
                 planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshPhongMaterial({
@@ -323,11 +317,12 @@ function solarSystemCreate(scene, planets){
                 orbit = new THREE.Line(new THREE.Geometry().setFromPoints(orbitCircle.getPoints(64)), new THREE.LineBasicMaterial({color: 0x808080}));
                 orbit.rotateX(0.5 * Math.PI);
                 scene.add(orbit);
-                saturnRing = createRing(10.45 * ER, 20.45 * ER, 280, texRings);
+                saturnRing = createRing(innerRadius, outerRadius, 280, texRings);
                 planets[sphere.name].name = sphere.name;
                 planets[sphere.name].receiveShadow = planets[sphere.name].castShadow = true;
                 scene.add(saturnRing);
                 scene.add(planets[sphere.name]);
+                targetList.push(planets[sphere.name]);
                 break;
             case "uranus":
                 planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshPhongMaterial({
@@ -342,6 +337,7 @@ function solarSystemCreate(scene, planets){
                 planets[sphere.name].name = sphere.name;
                 planets[sphere.name].receiveShadow = planets[sphere.name].castShadow = true;
                 scene.add(planets[sphere.name]);
+                targetList.push(planets[sphere.name]);
                 break;
             case "neptune":
                 planets[sphere.name] = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 32, 32), new THREE.MeshPhongMaterial({
@@ -356,17 +352,11 @@ function solarSystemCreate(scene, planets){
                 planets[sphere.name].name = sphere.name;
                 planets[sphere.name].receiveShadow = planets[sphere.name].castShadow = true;
                 scene.add(planets[sphere.name]);
+                targetList.push(planets[sphere.name]);
                 break;
             }
         });
-        solarSystemData.map(sphere => {
-          planets[sphere.name].traverse( function ( child ) {
-            if ( child instanceof THREE.Mesh ) {
-              child.castShadow = true;
-            }
-          })
-        });
-    renderer.domElement.addEventListener('click',onMouseMove);
+    renderer.domElement.addEventListener('click',onMouseMove, false);
 }
 /**
  * Map all planets and change it position, rotation etc.
@@ -375,6 +365,7 @@ function solarSystemCreate(scene, planets){
 function solarSystemMove(planets){
     solarSystemData.map(sphere => {
         if (sphere.name == "saturn"){
+            //I need to make rings move as well
             sphere.orbit += sphere.lineSpeed * 0.01;
             planets[sphere.name].rotateY(sphere.rotate);
             planets[sphere.name].position.x = Math.cos(sphere.orbit) * sphere.distance;
@@ -404,49 +395,27 @@ function createRing(radius, width, height, texture) {
     return ring;
 }
 
-function updateAspectRatio(){
-  //mantiene la relazioni di aspetto tra bordi e camera
-  var aspectRatio = window.innerWidth/window.innerHeight;
-  //renovar medidas de viewport
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  // para la perspectiva
-  camera.aspect = aspectRatio;
-
-  //Hay que actualizar la matriz de proyeccion
-  camera.updateProjectionMatrix();
-}
-
-/**
- * Animate object on scene
- */
-function animate() {
-    solarSystemMove(planets);
-}
-
-function render() {
-  // Bucle de refresco
-  animate();
-  requestAnimationFrame(render);
-  renderer.render(scene, camera);
-}
-
 /*
  * Mouse control
- * @param {*} event
 */
 function onMouseMove(event) {
     // Calculate mouse position in normalized device coordinates
     // (-1 to +1) for both components
     //event.preventDefault();
-    mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
-    mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
-    raycaster.setFromCamera( mouse, camera );
-    // Calculate objects intersecting the picking ray
-    const intersects = raycaster.intersectObjects(scene.children);
+    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
-    if (intersects.length > 0) {
-        descPanel.innerHTML = intersects[0].object.name;
-        displayData(intersects[0].object);
+    var vector = new THREE.Vector3(mouse.x, mouse.y, 1);
+    vector.unproject(camera);
+    var ray = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
+
+	  // create an array containing all objects in the scene with which the ray intersects
+	  var intersects = ray.intersectObjects( targetList );
+
+	  // if there is one (or more) intersections
+	  if ( intersects.length > 0 ){
+      descPanel.innerHTML = intersects[0].object.name;
+      displayData(intersects[0].object);
     } else {
         descPanel.style.display = "none";
     }
@@ -465,4 +434,30 @@ function displayData (object) {
     else {
         descPanel.style.display = "none";
     }
+}
+
+/**
+ * Animate object on scene
+ */
+function animate() {
+    solarSystemMove(planets);
+}
+
+function updateAspectRatio(){
+  //mantiene la relazioni di aspetto tra bordi e camera
+  var aspectRatio = window.innerWidth/window.innerHeight;
+  //renovar medidas de viewport
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  // para la perspectiva
+  camera.aspect = aspectRatio;
+
+  //Hay que actualizar la matriz de proyeccion
+  camera.updateProjectionMatrix();
+}
+
+function render() {
+  // Bucle de refresco
+  animate();
+  requestAnimationFrame(render);
+  renderer.render(scene, camera);
 }
